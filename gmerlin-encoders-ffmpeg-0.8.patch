@@ -1,0 +1,103 @@
+--- gmerlin-encoders-1.0.0/plugins/ffmpeg/ffmpeg_common.c.orig	2011-01-07 18:01:06.000000000 +0100
++++ gmerlin-encoders-1.0.0/plugins/ffmpeg/ffmpeg_common.c	2011-07-31 09:47:02.835856586 +0200
+@@ -171,7 +171,7 @@
+     return 0;
+ 
+   /* Initialize format context */
+-  fmt = guess_format(priv->format->short_name, (char*)0, (char*)0);
++  fmt = av_guess_format(priv->format->short_name, (char*)0, (char*)0);
+   if(!fmt)
+     return 0;
+ #if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(52, 26, 0)
+@@ -200,34 +200,30 @@
+ 
+   if(metadata)
+     {
++    char trackbuf[64];
+     if(metadata->title)
+-      strncpy(priv->ctx->title, metadata->title,
+-              sizeof(priv->ctx->title)-1);
++      av_dict_set(&priv->ctx->metadata, "title", metadata->title, 0);
+ 
+     if(metadata->author)
+-      strncpy(priv->ctx->author, metadata->author,
+-              sizeof(priv->ctx->author)-1);
++      av_dict_set(&priv->ctx->metadata, "artist", metadata->author, 0);
+ 
+     if(metadata->album)
+-      strncpy(priv->ctx->album, metadata->album,
+-              sizeof(priv->ctx->album)-1);
++      av_dict_set(&priv->ctx->metadata, "album", metadata->album, 0);
+ 
+     if(metadata->copyright)
+-      strncpy(priv->ctx->copyright, metadata->copyright,
+-              sizeof(priv->ctx->copyright)-1);
++      av_dict_set(&priv->ctx->metadata, "copyright", metadata->copyright, 0);
+ 
+     if(metadata->comment)
+-      strncpy(priv->ctx->comment, metadata->comment,
+-              sizeof(priv->ctx->comment)-1);
++      av_dict_set(&priv->ctx->metadata, "comment", metadata->comment, 0);
+     
+     if(metadata->genre)
+-      strncpy(priv->ctx->genre, metadata->genre,
+-              sizeof(priv->ctx->genre)-1);
++      av_dict_set(&priv->ctx->metadata, "genre", metadata->genre, 0);
+ 
+     if(metadata->date)
+-      priv->ctx->year = bg_metadata_get_year(metadata);
++      av_dict_set(&priv->ctx->metadata, "date", metadata->date, 0);
+     
+-    priv->ctx->track = metadata->track;
++    snprintf(trackbuf, sizeof(trackbuf), "%d", metadata->track);
++    av_dict_set(&priv->ctx->metadata, "track", trackbuf, 0);
+     }
+   
+   return 1;
+@@ -261,7 +257,7 @@
+   /* Set format for codec */
+   st->stream->codec->sample_rate = st->format.samplerate;
+   st->stream->codec->channels    = st->format.num_channels;
+-  st->stream->codec->codec_type        = CODEC_TYPE_AUDIO;
++  st->stream->codec->codec_type        = AVMEDIA_TYPE_AUDIO;
+   
+   priv->num_audio_streams++;
+   return priv->num_audio_streams-1;
+@@ -286,7 +282,7 @@
+                              priv->num_audio_streams +
+                              priv->num_video_streams);
+   
+-  st->stream->codec->codec_type = CODEC_TYPE_VIDEO;
++  st->stream->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+   
+   /* Set format for codec */
+   st->stream->codec->width  = st->format.image_width;
+@@ -576,7 +572,7 @@
+                             st->stream->codec->time_base,
+                             st->stream->time_base);
+     
+-    pkt.flags |= PKT_FLAG_KEY;
++    pkt.flags |= AV_PKT_FLAG_KEY;
+     pkt.stream_index= st->stream->index;
+     pkt.data= st->buffer;
+     
+@@ -647,7 +643,7 @@
+                           st->stream->time_base);
+     
+     if(st->stream->codec->coded_frame->key_frame)
+-      pkt.flags |= PKT_FLAG_KEY;
++      pkt.flags |= AV_PKT_FLAG_KEY;
+     pkt.stream_index = st->stream->index;
+     pkt.data = st->buffer;
+     pkt.size = bytes_encoded;
+--- gmerlin-encoders-1.0.0/plugins/ffmpeg/codecs.c.orig	2011-01-07 18:01:06.000000000 +0100
++++ gmerlin-encoders-1.0.0/plugins/ffmpeg/codecs.c	2011-07-31 10:08:10.599232369 +0200
+@@ -819,8 +819,6 @@
+   PARAM_FLOAT("ff_p_masking",p_masking);
+   PARAM_FLOAT("ff_dark_masking",dark_masking);
+   PARAM_ENUM("ff_prediction_method",prediction_method,prediction_method);
+-  PARAM_INT("ff_mb_qmin",mb_qmin);
+-  PARAM_INT("ff_mb_qmax",mb_qmax);
+   PARAM_ENUM("ff_me_cmp",me_cmp,compare_func);
+   PARAM_CMP_CHROMA("ff_me_cmp_chroma",me_cmp);
+   PARAM_ENUM("ff_me_sub_cmp",me_sub_cmp,compare_func);
