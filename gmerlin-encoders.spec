@@ -2,13 +2,12 @@
 Summary:	Encoder plugins for gmerlin
 Summary(pl.UTF-8):	Wtyczki kodujące dla gmerlina
 Name:		gmerlin-encoders
-Version:	1.0.0
+Version:	1.2.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
-# Source0-md5:	036b074cffb788e9b96ce0068f555aa4
-Patch0:		%{name}-ffmpeg-0.8.patch
+# Source0-md5:	db401732dde0c27702ad3303956cb158
 Patch1:		%{name}-link.patch
 URL:		http://gmerlin.sourceforge.net/avdec_frame.html
 BuildRequires:	autoconf >= 2.50
@@ -17,7 +16,7 @@ BuildRequires:	ffmpeg-devel >= 0.7
 BuildRequires:	faac-devel >= 1.24
 BuildRequires:	flac-devel >= 1.1.0
 BuildRequires:	gettext-devel
-BuildRequires:	gmerlin-devel >= 1.0.0
+BuildRequires:	gmerlin-devel >= 1.2.0
 BuildRequires:	lame-libs-devel >= 3.93
 BuildRequires:	libogg-devel >= 1.0
 BuildRequires:	libshout-devel >= 2.2.2
@@ -30,7 +29,7 @@ BuildRequires:	speex-devel >= 1.0.4
 Requires:	faac >= 1.24
 Requires:	ffmpeg-libs >= 0.7
 Requires:	flac >= 1.1.0
-Requires:	gmerlin >= 1.0.0
+Requires:	gmerlin >= 1.2.0
 Requires:	lame-libs >= 3.93
 Requires:	libogg >= 1.0
 Requires:	libshout >= 2.2.2
@@ -52,7 +51,6 @@ liczby formatów plików.
 
 %prep
 %setup -q
-%patch0 -p1
 %patch1 -p1
 
 # evil, sets CFLAGS basing on /proc/cpuinfo, overrides our optflags
@@ -86,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS README
+%attr(755,root,root) %{_libdir}/gmerlin/plugins/b_lame.so
 %attr(755,root,root) %{_libdir}/gmerlin/plugins/b_ogg.so
 %attr(755,root,root) %{_libdir}/gmerlin/plugins/e_faac.so
 %attr(755,root,root) %{_libdir}/gmerlin/plugins/e_ffmpeg.so
