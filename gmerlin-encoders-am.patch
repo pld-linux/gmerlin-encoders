@@ -1,0 +1,11 @@
+--- gmerlin-encoders-1.2.0/configure.ac.orig	2013-03-17 20:43:54.862490957 +0100
++++ gmerlin-encoders-1.2.0/configure.ac	2013-03-17 21:21:47.469110244 +0100
+@@ -1,7 +1,7 @@
+ AC_INIT
+ AC_CONFIG_SRCDIR([include/gmerlin_encoders.h])
+ 
+-AM_CONFIG_HEADER(include/config.h)
++AC_CONFIG_HEADERS(include/config.h)
+ AM_INIT_AUTOMAKE(gmerlin-encoders, 1.2.0)
+ 
+ SAVE_CFLAGS=$CFLAGS

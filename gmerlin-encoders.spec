@@ -8,33 +8,35 @@ License:	GPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
 # Source0-md5:	db401732dde0c27702ad3303956cb158
+Patch0:		%{name}-am.patch
 Patch1:		%{name}-link.patch
 URL:		http://gmerlin.sourceforge.net/avdec_frame.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	ffmpeg-devel >= 0.7
 BuildRequires:	faac-devel >= 1.24
-BuildRequires:	flac-devel >= 1.1.0
+# avcodec build >= 3412992, libpostproc >= 51.0.0, libswscale >= 0.5.0
+BuildRequires:	ffmpeg-devel >= 0.7
+BuildRequires:	flac-devel >= 1.2.0
 BuildRequires:	gettext-devel
 BuildRequires:	gmerlin-devel >= 1.2.0
 BuildRequires:	lame-libs-devel >= 3.93
-BuildRequires:	libogg-devel >= 1.0
+BuildRequires:	libogg-devel >= 1:1.1
 BuildRequires:	libshout-devel >= 2.2.2
 BuildRequires:	libtheora-devel >= 1.0.0
 BuildRequires:	libtool
-BuildRequires:	libvorbis-devel >= 1.0
+BuildRequires:	libvorbis-devel >= 1:1.0
 BuildRequires:	mjpegtools-devel >= 1.9.0
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	speex-devel >= 1.0.4
 Requires:	faac >= 1.24
 Requires:	ffmpeg-libs >= 0.7
-Requires:	flac >= 1.1.0
+Requires:	flac >= 1.2.0
 Requires:	gmerlin >= 1.2.0
 Requires:	lame-libs >= 3.93
-Requires:	libogg >= 1.0
+Requires:	libogg >= 1:1.1
 Requires:	libshout >= 2.2.2
 Requires:	libtheora >= 1.0.0
-Requires:	libvorbis >= 1.0
+Requires:	libvorbis >= 1:1.0
 Requires:	mjpegtools >= 1.9.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -51,6 +53,7 @@ liczby formatów plików.
 
 %prep
 %setup -q
+%patch0 -p1
 %patch1 -p1
 
 # evil, sets CFLAGS basing on /proc/cpuinfo, overrides our optflags
