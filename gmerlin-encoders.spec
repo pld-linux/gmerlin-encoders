@@ -10,6 +10,7 @@ Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
 # Source0-md5:	db401732dde0c27702ad3303956cb158
 Patch0:		%{name}-am.patch
 Patch1:		%{name}-link.patch
+Patch2:		ffmpeg2.patch
 URL:		http://gmerlin.sourceforge.net/avdec_frame.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -55,6 +56,7 @@ liczby formatów plików.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # evil, sets CFLAGS basing on /proc/cpuinfo, overrides our optflags
 # (--with-cpuflags=none disables using /proc/cpuinfo, but not overriding)

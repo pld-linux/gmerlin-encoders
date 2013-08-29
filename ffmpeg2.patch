@@ -1,0 +1,417 @@
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.h~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.h	2013-08-29 19:33:01.840942398 +0200
+@@ -57,7 +57,7 @@
+   {
+   char * name;
+   char * long_name;
+-  enum CodecID id;
++  enum AVCodecID id;
+   const bg_parameter_info_t * parameters;
+ 
+   /* Terminated with PIX_FMT_NB */
+@@ -74,8 +74,8 @@
+   int max_audio_streams;
+   int max_video_streams;
+   
+-  const enum CodecID * audio_codecs;
+-  const enum CodecID * video_codecs;
++  const enum AVCodecID * audio_codecs;
++  const enum AVCodecID * video_codecs;
+   
+   int flags;
+   const bg_encoder_framerate_t * framerates;
+@@ -101,10 +101,10 @@
+                               const char * name,
+                               const bg_parameter_value_t * val);
+ 
+-enum CodecID
++enum AVCodecID
+ bg_ffmpeg_find_audio_encoder(const ffmpeg_format_info_t * format, const char * name);
+ 
+-enum CodecID
++enum AVCodecID
+ bg_ffmpeg_find_video_encoder(const ffmpeg_format_info_t * format, const char * name);
+ 
+ typedef struct
+@@ -237,7 +237,7 @@
+ void bg_ffmpeg_set_video_parameter(void * data, int stream, const char * name,
+                                   const bg_parameter_value_t * v);
+ 
+-enum PixelFormat * bg_ffmpeg_get_pixelformats(enum CodecID id);
++enum PixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id);
+ 
+ 
+ int bg_ffmpeg_set_video_pass(void * data, int stream, int pass,
+@@ -269,7 +269,7 @@
+ 
+ gavl_sample_format_t bg_sample_format_ffmpeg_2_gavl(enum SampleFormat p);
+ 
+-enum CodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl);
++enum AVCodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl);
+ 
+ 
+ /* Compressed stream support */
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c	2013-08-29 19:33:31.924651041 +0200
+@@ -343,7 +343,7 @@
+   return 1;
+   }
+ 
+-static void set_audio_params(ffmpeg_audio_stream_t * st, enum CodecID id)
++static void set_audio_params(ffmpeg_audio_stream_t * st, enum AVCodecID id)
+   {
+   /* Will be cleared later if we don't write compressed
+      packets */
+@@ -360,7 +360,7 @@
+   st->stream->codec->codec_type  = CODEC_TYPE_AUDIO;
+   }
+ 
+-static void set_video_params(ffmpeg_video_stream_t * st, enum CodecID id)
++static void set_video_params(ffmpeg_video_stream_t * st, enum AVCodecID id)
+   {
+   st->stream->codec->codec_type = CODEC_TYPE_VIDEO;
+   st->stream->codec->codec_id = id;
+@@ -522,7 +522,7 @@
+   
+   if(!strcmp(name, "codec"))
+     {
+-    enum CodecID id;
++    enum AVCodecID id;
+ #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53,10,0)
+     AVCodec * codec;
+ #endif
+@@ -560,7 +560,7 @@
+   
+   if(!strcmp(name, "codec"))
+     {
+-    enum CodecID id;
++    enum AVCodecID id;
+ #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53,10,0)
+     AVCodec * codec;
+ #endif
+@@ -1417,7 +1417,7 @@
+ static const struct
+   {
+   gavl_codec_id_t gavl;
+-  enum CodecID    ffmpeg;
++  enum AVCodecID    ffmpeg;
+   }
+ codec_ids[] =
+   {
+@@ -1445,7 +1445,7 @@
+     { GAVL_CODEC_ID_NONE,      CODEC_ID_NONE       },
+   };
+ 
+-enum CodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl)
++enum AVCodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl)
+   {
+   int i = 0;
+   while(codec_ids[i].gavl != GAVL_CODEC_ID_NONE)
+@@ -1462,7 +1462,7 @@
+                                       const gavl_compression_info_t * info)
+   {
+   int i;
+-  enum CodecID ffmpeg_id;
++  enum AVCodecID ffmpeg_id;
+   ffmpeg_priv_t * f = priv;
+   
+   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
+@@ -1483,7 +1483,7 @@
+                                       const gavl_compression_info_t * info)
+   {
+   int i;
+-  enum CodecID ffmpeg_id;
++  enum AVCodecID ffmpeg_id;
+   ffmpeg_priv_t * f = priv;
+ 
+   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_video.c~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_video.c	2013-08-29 19:33:49.998209818 +0200
+@@ -32,7 +32,7 @@
+       .short_name = "mpeg1video",
+       .extension =  "m1v",
+       .max_video_streams = 1,
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG1VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+                                        CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+@@ -42,7 +42,7 @@
+       .short_name = "mpeg2video",
+       .extension =  "m2v",
+       .max_video_streams = 1,
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG2VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+                                        CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c	2013-08-29 19:34:38.295478805 +0200
+@@ -488,7 +488,7 @@
+   };
+ 
+ static const ffmpeg_codec_info_t **
+-add_codec_info(const ffmpeg_codec_info_t ** info, enum CodecID id, int * num)
++add_codec_info(const ffmpeg_codec_info_t ** info, enum AVCodecID id, int * num)
+   {
+   int i;
+   /* Check if the codec id is already in the array */
+@@ -658,11 +658,11 @@
+   return ret;
+   }
+ 
+-enum CodecID
++enum AVCodecID
+ bg_ffmpeg_find_audio_encoder(const ffmpeg_format_info_t * format, const char * name)
+   {
+   int i = 0, found = 0;
+-  enum CodecID ret = CODEC_ID_NONE;
++  enum AVCodecID ret = CODEC_ID_NONE;
+   
+   while(audio_codecs[i].name)
+     {
+@@ -696,11 +696,11 @@
+   return ret;
+   }
+ 
+-enum CodecID
++enum AVCodecID
+ bg_ffmpeg_find_video_encoder(const ffmpeg_format_info_t * format, const char * name)
+   {
+   int i = 0, found = 0;
+-  enum CodecID ret = CODEC_ID_NONE;
++  enum AVCodecID ret = CODEC_ID_NONE;
+   
+   while(video_codecs[i].name)
+     {
+@@ -930,8 +930,6 @@
+   PARAM_INT("ff_max_b_frames",max_b_frames);
+   PARAM_FLOAT("ff_b_quant_factor",b_quant_factor);
+   PARAM_INT("ff_b_frame_strategy",b_frame_strategy);
+-  PARAM_INT("ff_luma_elim_threshold",luma_elim_threshold);
+-  PARAM_INT("ff_chroma_elim_threshold",chroma_elim_threshold);
+   PARAM_INT("ff_strict_std_compliance",strict_std_compliance);
+   PARAM_QP2LAMBDA("ff_b_quant_offset",b_quant_offset);
+   PARAM_INT("ff_rc_min_rate",rc_min_rate);
+@@ -967,8 +967,6 @@
+   PARAM_QP2LAMBDA("ff_lmax", lmax);
+   PARAM_INT("ff_noise_reduction",noise_reduction);
+   PARAM_INT_SCALE("ff_rc_initial_buffer_occupancy",rc_initial_buffer_occupancy,1000);
+-  PARAM_INT("ff_inter_threshold",inter_threshold);
+-  PARAM_INT("ff_quantizer_noise_shaping",quantizer_noise_shaping);
+   PARAM_INT("ff_me_threshold",me_threshold);
+   PARAM_INT("ff_mb_threshold",mb_threshold);
+   PARAM_INT("ff_nsse_weight",nsse_weight);
+@@ -995,8 +995,8 @@
+   PARAM_FLAG("ff_flag_bitexact",CODEC_FLAG_BITEXACT);
+   PARAM_FLAG("ff_flag_ac_pred",CODEC_FLAG_AC_PRED);
+   //  PARAM_FLAG("ff_flag_h263p_umv",CODEC_FLAG_H263P_UMV);
+-  PARAM_FLAG("ff_flag_cbp_rd",CODEC_FLAG_CBP_RD);
+-  PARAM_FLAG("ff_flag_qp_rd",CODEC_FLAG_QP_RD);
++  PARAM_FLAG("ff_flag_cbp_rd",0x04000000);
++  PARAM_FLAG("ff_flag_qp_rd",0x08000000);
+   //  PARAM_FLAG("ff_flag_h263p_aiv",CODEC_FLAG_H263P_AIV);
+   //  PARAM_FLAG("ffx_flag_obmc",CODEC_FLAG_OBMC);
+   PARAM_FLAG("ff_flag_loop_filter",CODEC_FLAG_LOOP_FILTER);
+@@ -1003,7 +1003,7 @@
+   //  PARAM_FLAG("ff_flag_h263p_slice_struct",CODEC_FLAG_H263P_SLICE_STRUCT);
+   PARAM_FLAG("ff_flag_closed_gop",CODEC_FLAG_CLOSED_GOP);
+   PARAM_FLAG2("ff_flag2_fast",CODEC_FLAG2_FAST);
+-  PARAM_FLAG2("ff_flag2_strict_gop",CODEC_FLAG2_STRICT_GOP);
++  PARAM_FLAG2("ff_flag2_strict_gop",0x00000002);
+ 
+ #if LIBAVCODEC_VERSION_MAJOR >= 54
+   PARAM_DICT_STRING("libx264_preset", "preset");
+@@ -1018,7 +1018,7 @@
+   
+   }
+ 
+-enum PixelFormat * bg_ffmpeg_get_pixelformats(enum CodecID id)
++enum PixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id)
+   {
+   int i = 0;
+   while(video_codecs[i].name)
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_audio.c~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_audio.c	2013-08-29 19:39:11.125535593 +0200
+@@ -30,7 +30,7 @@
+       .short_name = "au",
+       .extension =  "au",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_PCM_MULAW,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_MULAW,
+                                        CODEC_ID_PCM_S16BE,
+                                        CODEC_ID_PCM_ALAW,
+                                        CODEC_ID_NONE },
+@@ -40,7 +40,7 @@
+       .short_name = "ac3",
+       .extension =  "ac3",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_AC3,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_AC3,
+                                        CODEC_ID_NONE },
+     },
+     {
+@@ -48,7 +48,7 @@
+       .short_name = "aiff",
+       .extension =  "aif",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_PCM_S16BE,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_S16BE,
+                                        CODEC_ID_PCM_S8,
+                                        CODEC_ID_PCM_ALAW,
+                                        CODEC_ID_PCM_MULAW,
+@@ -59,7 +59,7 @@
+       .short_name = "mp2",
+       .extension =  "mp2",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP2,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+                                        CODEC_ID_NONE },
+     },
+ #if LIBAVCODEC_BUILD >= ((51<<16)+(32<<8)+0)
+@@ -68,7 +68,7 @@
+       .short_name = "asf",
+       .extension =  "wma",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_WMAV2,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_WMAV2,
+                                        CODEC_ID_WMAV1,
+                                        CODEC_ID_NONE },
+     },
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg.c~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg.c	2013-08-29 19:39:41.395909989 +0200
+@@ -33,7 +33,7 @@
+       .extension =  "avi",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_PCM_S16LE,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_S16LE,
+                                          CODEC_ID_PCM_U8,
+                                          CODEC_ID_PCM_ALAW,
+                                          CODEC_ID_PCM_MULAW,
+@@ -42,7 +42,7 @@
+                                          CODEC_ID_AC3,
+                                          CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG4,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG4,
+                                        CODEC_ID_MSMPEG4V3,
+                                        CODEC_ID_MJPEG,
+                                        CODEC_ID_NONE },
+@@ -54,11 +54,11 @@
+       .extension =  "mpg",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP2,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+                                        CODEC_ID_MP3,
+                                        CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG1VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+                                        CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+@@ -70,12 +70,12 @@
+       .extension =  "vob",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP2,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+                                          CODEC_ID_MP3,
+                                          CODEC_ID_AC3,
+                                          CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG2VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+                                          CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+@@ -86,11 +86,11 @@
+       .extension =  "vob",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP2,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+                                          CODEC_ID_AC3,
+                                          CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG2VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+                                          CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+@@ -101,10 +101,10 @@
+       .extension =  "flv",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP3,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+                                          CODEC_ID_NONE },
+       
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_FLV1,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_FLV1,
+                                          CODEC_ID_NONE },
+     },
+     {
+@@ -113,7 +113,7 @@
+       .extension =  "asf",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum CodecID[]){
++      .audio_codecs = (enum AVCodecID[]){
+ #if LIBAVCODEC_BUILD >= ((51<<16)+(32<<8)+0)
+                                        CODEC_ID_WMAV2,
+                                        CODEC_ID_WMAV1,
+@@ -122,7 +122,7 @@
+                                        CODEC_ID_MP2,
+                                        CODEC_ID_NONE },
+       
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_WMV1,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_WMV1,
+                                        // CODEC_ID_WMV2, /* Crash */
+                                        CODEC_ID_NONE },
+     },
+@@ -132,12 +132,12 @@
+       .extension =  "ts",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP3,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+                                        CODEC_ID_MP2,
+                                        CODEC_ID_AC3,
+                                        CODEC_ID_NONE },
+       
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG1VIDEO,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+                                        CODEC_ID_MPEG2VIDEO,
+                                        CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+@@ -149,12 +149,12 @@
+       .extension =  "mkv",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_MP3,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+                                          CODEC_ID_MP2,
+                                          CODEC_ID_AC3,
+                                          CODEC_ID_NONE },
+       
+-      .video_codecs = (enum CodecID[]){
++      .video_codecs = (enum AVCodecID[]){
+ #if LIBAVCODEC_VERSION_MAJOR >= 54
+                                          CODEC_ID_H264,
+ #endif
+@@ -172,10 +172,10 @@
+       .extension =  "rm",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum CodecID[]){  CODEC_ID_AC3,
++      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_AC3,
+                                        CODEC_ID_NONE },
+       
+-      .video_codecs = (enum CodecID[]){  CODEC_ID_RV10,
++      .video_codecs = (enum AVCodecID[]){  CODEC_ID_RV10,
+                                        CODEC_ID_NONE },
+     },
+ #endif
