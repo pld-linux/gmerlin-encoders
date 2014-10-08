@@ -3,7 +3,7 @@ Summary:	Encoder plugins for gmerlin
 Summary(pl.UTF-8):	Wtyczki kodujące dla gmerlina
 Name:		gmerlin-encoders
 Version:	1.2.0
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
