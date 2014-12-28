@@ -18,7 +18,7 @@ BuildRequires:	faac-devel >= 1.24
 # avcodec build >= 3412992, libpostproc >= 51.0.0, libswscale >= 0.5.0
 BuildRequires:	ffmpeg-devel >= 0.7
 BuildRequires:	flac-devel >= 1.2.0
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	gmerlin-devel >= 1.2.0
 BuildRequires:	lame-libs-devel >= 3.93
 BuildRequires:	libogg-devel >= 1:1.1
