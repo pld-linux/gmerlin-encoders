@@ -1,0 +1,829 @@
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/codecs.c gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/codecs.c	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c	2016-04-04 22:06:35.238121141 +0900
+@@ -351,61 +351,61 @@
+     {
+       .name      = "pcm_s16be",
+       .long_name = TRS("16 bit PCM"),
+-      .id        = CODEC_ID_PCM_S16BE,
++      .id        = AV_CODEC_ID_PCM_S16BE,
+     },
+     {
+       .name      = "pcm_s16le",
+       .long_name = TRS("16 bit PCM"),
+-      .id        = CODEC_ID_PCM_S16LE,
++      .id        = AV_CODEC_ID_PCM_S16LE,
+     },
+     {
+       .name      = "pcm_s8",
+       .long_name = TRS("8 bit PCM"),
+-      .id        = CODEC_ID_PCM_S8,
++      .id        = AV_CODEC_ID_PCM_S8,
+     },
+     {
+       .name      = "pcm_u8",
+       .long_name = TRS("8 bit PCM"),
+-      .id        = CODEC_ID_PCM_U8,
++      .id        = AV_CODEC_ID_PCM_U8,
+     },
+     {
+       .name      = "pcm_alaw",
+       .long_name = TRS("alaw"),
+-      .id        = CODEC_ID_PCM_ALAW,
++      .id        = AV_CODEC_ID_PCM_ALAW,
+     },
+     {
+       .name      = "pcm_mulaw",
+       .long_name = TRS("mulaw"),
+-      .id        = CODEC_ID_PCM_MULAW,
++      .id        = AV_CODEC_ID_PCM_MULAW,
+     },
+     {
+       .name      = "ac3",
+       .long_name = TRS("AC3"),
+-      .id        = CODEC_ID_AC3,
++      .id        = AV_CODEC_ID_AC3,
+       .parameters = parameters_ac3,
+     },
+     {
+       .name      = "mp2",
+       .long_name = TRS("MPEG audio layer 2"),
+-      .id        = CODEC_ID_MP2,
++      .id        = AV_CODEC_ID_MP2,
+       .parameters = parameters_mp2,
+     },
+     {
+       .name      = "wma1",
+       .long_name = TRS("Windows media Audio 1"),
+-      .id        = CODEC_ID_WMAV1,
++      .id        = AV_CODEC_ID_WMAV1,
+       .parameters = parameters_wma,
+     },
+     {
+       .name      = "wma2",
+       .long_name = TRS("Windows media Audio 2"),
+-      .id        = CODEC_ID_WMAV2,
++      .id        = AV_CODEC_ID_WMAV2,
+       .parameters = parameters_wma,
+     },
+     {
+       .name      = "mp3",
+       .long_name = TRS("MPEG audio layer 3"),
+-      .id        = CODEC_ID_MP3,
++      .id        = AV_CODEC_ID_MP3,
+       .parameters = parameters_mp3,
+     },
+     { /* End of array */ }
+@@ -416,71 +416,71 @@
+     {
+       .name       = "mjpeg",
+       .long_name  = TRS("Motion JPEG"),
+-      .id         = CODEC_ID_MJPEG,
++      .id         = AV_CODEC_ID_MJPEG,
+       .parameters = parameters_mjpeg,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUVJ420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUVJ420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "mpeg4",
+       .long_name  = TRS("MPEG-4"),
+-      .id         = CODEC_ID_MPEG4,
++      .id         = AV_CODEC_ID_MPEG4,
+       .parameters = parameters_mpeg4,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "msmpeg4v3",
+       .long_name  = TRS("Divx 3 compatible"),
+-      .id         = CODEC_ID_MSMPEG4V3,
++      .id         = AV_CODEC_ID_MSMPEG4V3,
+       .parameters = parameters_msmpeg4v3,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "mpeg1video",
+       .long_name  = TRS("MPEG-1 Video"),
+-      .id         = CODEC_ID_MPEG1VIDEO,
++      .id         = AV_CODEC_ID_MPEG1VIDEO,
+       .parameters = parameters_mpeg1,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "mpeg2video",
+       .long_name  = TRS("MPEG-2 Video"),
+-      .id         = CODEC_ID_MPEG2VIDEO,
++      .id         = AV_CODEC_ID_MPEG2VIDEO,
+       .parameters = parameters_mpeg1,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "flv1",
+       .long_name  = TRS("Flash 1"),
+-      .id         = CODEC_ID_FLV1,
++      .id         = AV_CODEC_ID_FLV1,
+       .parameters = parameters_msmpeg4v3,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "wmv1",
+       .long_name  = TRS("WMV 1"),
+-      .id         = CODEC_ID_WMV1,
++      .id         = AV_CODEC_ID_WMV1,
+       .parameters = parameters_msmpeg4v3,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "rv10",
+       .long_name  = TRS("Real Video 1"),
+-      .id         = CODEC_ID_RV10,
++      .id         = AV_CODEC_ID_RV10,
+       .parameters = parameters_msmpeg4v3,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+     {
+       .name       = "libx264",
+       .long_name  = TRS("H.264"),
+-      .id         = CODEC_ID_H264,
++      .id         = AV_CODEC_ID_H264,
+       .parameters = parameters_libx264,
+-      .pixelformats = (enum PixelFormat[]) { PIX_FMT_YUV420P, PIX_FMT_NB },
++      .pixelformats = (enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NB },
+     },
+ #if 0
+     {
+       .name       = "wmv2",
+       .long_name  = TRS("WMV 2"),
+-      .id         = CODEC_ID_WMV2,
++      .id         = AV_CODEC_ID_WMV2,
+       .parameters = parameters_msmpeg4v3
+     },
+ #endif
+@@ -599,7 +599,7 @@
+       continue;
+       }
+     j = 0;
+-    while(format_info[i].audio_codecs[j] != CODEC_ID_NONE)
++    while(format_info[i].audio_codecs[j] != AV_CODEC_ID_NONE)
+       {
+       infos = add_codec_info(infos, format_info[i].audio_codecs[j],
+                              &num_infos);
+@@ -636,7 +636,7 @@
+       continue;
+       }
+     j = 0;
+-    while(format_info[i].video_codecs[j] != CODEC_ID_NONE)
++    while(format_info[i].video_codecs[j] != AV_CODEC_ID_NONE)
+       {
+       infos = add_codec_info(infos, format_info[i].video_codecs[j],
+                              &num_infos);
+@@ -662,7 +662,7 @@
+ bg_ffmpeg_find_audio_encoder(const ffmpeg_format_info_t * format, const char * name)
+   {
+   int i = 0, found = 0;
+-  enum AVCodecID ret = CODEC_ID_NONE;
++  enum AVCodecID ret = AV_CODEC_ID_NONE;
+   
+   while(audio_codecs[i].name)
+     {
+@@ -675,7 +675,7 @@
+     }
+ 
+   i = 0;
+-  while(format->audio_codecs[i] != CODEC_ID_NONE)
++  while(format->audio_codecs[i] != AV_CODEC_ID_NONE)
+     {
+     if(format->audio_codecs[i] == ret)
+       {
+@@ -690,7 +690,7 @@
+     bg_log(BG_LOG_ERROR, LOG_DOMAIN,
+            "Audio codec %s is not supported by %s",
+            name, format->name);
+-    ret = CODEC_ID_NONE;
++    ret = AV_CODEC_ID_NONE;
+     }
+   
+   return ret;
+@@ -700,7 +700,7 @@
+ bg_ffmpeg_find_video_encoder(const ffmpeg_format_info_t * format, const char * name)
+   {
+   int i = 0, found = 0;
+-  enum AVCodecID ret = CODEC_ID_NONE;
++  enum AVCodecID ret = AV_CODEC_ID_NONE;
+   
+   while(video_codecs[i].name)
+     {
+@@ -713,7 +713,7 @@
+     }
+ 
+   i = 0;
+-  while(format->video_codecs[i] != CODEC_ID_NONE)
++  while(format->video_codecs[i] != AV_CODEC_ID_NONE)
+     {
+     if(format->video_codecs[i] == ret)
+       {
+@@ -728,7 +728,7 @@
+     bg_log(BG_LOG_ERROR, LOG_DOMAIN,
+            "Video codec %s is not supported by %s",
+            name, format->name);
+-    ret = CODEC_ID_NONE;
++    ret = AV_CODEC_ID_NONE;
+     }
+   
+   return ret;
+@@ -1014,7 +1014,7 @@
+   
+   }
+ 
+-enum PixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id)
++enum AVPixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id)
+   {
+   int i = 0;
+   while(video_codecs[i].name)
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg_audio.c gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_audio.c
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg_audio.c	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_audio.c	2016-04-04 22:06:54.388398290 +0900
+@@ -30,37 +30,37 @@
+       .short_name = "au",
+       .extension =  "au",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_MULAW,
+-                                       CODEC_ID_PCM_S16BE,
+-                                       CODEC_ID_PCM_ALAW,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_PCM_MULAW,
++                                       AV_CODEC_ID_PCM_S16BE,
++                                       AV_CODEC_ID_PCM_ALAW,
++                                       AV_CODEC_ID_NONE },
+     },
+     {
+       .name = "Raw AC3",
+       .short_name = "ac3",
+       .extension =  "ac3",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_AC3,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_AC3,
++                                       AV_CODEC_ID_NONE },
+     },
+     {
+       .name =       "AIFF",
+       .short_name = "aiff",
+       .extension =  "aif",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_S16BE,
+-                                       CODEC_ID_PCM_S8,
+-                                       CODEC_ID_PCM_ALAW,
+-                                       CODEC_ID_PCM_MULAW,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_PCM_S16BE,
++                                       AV_CODEC_ID_PCM_S8,
++                                       AV_CODEC_ID_PCM_ALAW,
++                                       AV_CODEC_ID_PCM_MULAW,
++                                       AV_CODEC_ID_NONE },
+     },
+     {
+       .name =       "MP2",
+       .short_name = "mp2",
+       .extension =  "mp2",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP2,
++                                       AV_CODEC_ID_NONE },
+     },
+ #if LIBAVCODEC_BUILD >= ((51<<16)+(32<<8)+0)
+     {
+@@ -68,9 +68,9 @@
+       .short_name = "asf",
+       .extension =  "wma",
+       .max_audio_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_WMAV2,
+-                                       CODEC_ID_WMAV1,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_WMAV2,
++                                       AV_CODEC_ID_WMAV1,
++                                       AV_CODEC_ID_NONE },
+     },
+ #endif
+     { /* End of formats */ }
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg.c gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg.c
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg.c	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg.c	2016-04-04 22:07:05.948566935 +0900
+@@ -33,19 +33,19 @@
+       .extension =  "avi",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_PCM_S16LE,
+-                                         CODEC_ID_PCM_U8,
+-                                         CODEC_ID_PCM_ALAW,
+-                                         CODEC_ID_PCM_MULAW,
+-                                         CODEC_ID_MP3,
+-                                         CODEC_ID_MP2,
+-                                         CODEC_ID_AC3,
+-                                         CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_PCM_S16LE,
++                                         AV_CODEC_ID_PCM_U8,
++                                         AV_CODEC_ID_PCM_ALAW,
++                                         AV_CODEC_ID_PCM_MULAW,
++                                         AV_CODEC_ID_MP3,
++                                         AV_CODEC_ID_MP2,
++                                         AV_CODEC_ID_AC3,
++                                         AV_CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG4,
+-                                       CODEC_ID_MSMPEG4V3,
+-                                       CODEC_ID_MJPEG,
+-                                       CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG4,
++                                       AV_CODEC_ID_MSMPEG4V3,
++                                       AV_CODEC_ID_MJPEG,
++                                       AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+     },
+     {
+@@ -54,12 +54,12 @@
+       .extension =  "mpg",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+-                                       CODEC_ID_MP3,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP2,
++                                       AV_CODEC_ID_MP3,
++                                       AV_CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+-                                       CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG1VIDEO,
++                                       AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+       
+@@ -70,13 +70,13 @@
+       .extension =  "vob",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+-                                         CODEC_ID_MP3,
+-                                         CODEC_ID_AC3,
+-                                         CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP2,
++                                         AV_CODEC_ID_MP3,
++                                         AV_CODEC_ID_AC3,
++                                         AV_CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+-                                         CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG2VIDEO,
++                                         AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+@@ -86,12 +86,12 @@
+       .extension =  "vob",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP2,
+-                                         CODEC_ID_AC3,
+-                                         CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP2,
++                                         AV_CODEC_ID_AC3,
++                                         AV_CODEC_ID_NONE },
+ 
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+-                                         CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG2VIDEO,
++                                         AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+@@ -101,11 +101,11 @@
+       .extension =  "flv",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+-                                         CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP3,
++                                         AV_CODEC_ID_NONE },
+       
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_FLV1,
+-                                         CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_FLV1,
++                                         AV_CODEC_ID_NONE },
+     },
+     {
+       .name =       "ASF",
+@@ -115,16 +115,16 @@
+       .max_video_streams = 1,
+       .audio_codecs = (enum AVCodecID[]){
+ #if LIBAVCODEC_BUILD >= ((51<<16)+(32<<8)+0)
+-                                       CODEC_ID_WMAV2,
+-                                       CODEC_ID_WMAV1,
++                                       AV_CODEC_ID_WMAV2,
++                                       AV_CODEC_ID_WMAV1,
+ #endif
+-                                       CODEC_ID_MP3,
+-                                       CODEC_ID_MP2,
+-                                       CODEC_ID_NONE },
+-      
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_WMV1,
+-                                       // CODEC_ID_WMV2, /* Crash */
+-                                       CODEC_ID_NONE },
++                                       AV_CODEC_ID_MP3,
++                                       AV_CODEC_ID_MP2,
++                                       AV_CODEC_ID_NONE },
++      
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_WMV1,
++                                       // AV_CODEC_ID_WMV2, /* Crash */
++                                       AV_CODEC_ID_NONE },
+     },
+     {
+       .name =       "MPEG-2 Transport stream",
+@@ -132,14 +132,14 @@
+       .extension =  "ts",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+-                                       CODEC_ID_MP2,
+-                                       CODEC_ID_AC3,
+-                                       CODEC_ID_NONE },
+-      
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+-                                       CODEC_ID_MPEG2VIDEO,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP3,
++                                       AV_CODEC_ID_MP2,
++                                       AV_CODEC_ID_AC3,
++                                       AV_CODEC_ID_NONE },
++      
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG1VIDEO,
++                                       AV_CODEC_ID_MPEG2VIDEO,
++                                       AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+@@ -149,19 +149,19 @@
+       .extension =  "mkv",
+       .max_audio_streams = -1,
+       .max_video_streams = -1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_MP3,
+-                                         CODEC_ID_MP2,
+-                                         CODEC_ID_AC3,
+-                                         CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MP3,
++                                         AV_CODEC_ID_MP2,
++                                         AV_CODEC_ID_AC3,
++                                         AV_CODEC_ID_NONE },
+       
+       .video_codecs = (enum AVCodecID[]){
+ #if LIBAVCODEC_VERSION_MAJOR >= 54
+-                                         CODEC_ID_H264,
++                                         AV_CODEC_ID_H264,
+ #endif
+-                                         CODEC_ID_MPEG4,
+-                                         CODEC_ID_MPEG1VIDEO,
+-                                         CODEC_ID_MPEG2VIDEO,
+-                                         CODEC_ID_NONE },
++                                         AV_CODEC_ID_MPEG4,
++                                         AV_CODEC_ID_MPEG1VIDEO,
++                                         AV_CODEC_ID_MPEG2VIDEO,
++                                         AV_CODEC_ID_NONE },
+       //      .flags = FLAG_CONSTANT_FRAMERATE,
+       //      .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+@@ -172,11 +172,11 @@
+       .extension =  "rm",
+       .max_audio_streams = 1,
+       .max_video_streams = 1,
+-      .audio_codecs = (enum AVCodecID[]){  CODEC_ID_AC3,
+-                                       CODEC_ID_NONE },
++      .audio_codecs = (enum AVCodecID[]){  AV_CODEC_ID_AC3,
++                                       AV_CODEC_ID_NONE },
+       
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_RV10,
+-                                       CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_RV10,
++                                       AV_CODEC_ID_NONE },
+     },
+ #endif
+     { /* End of formats */ }
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg_video.c gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_video.c
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/e_ffmpeg_video.c	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/e_ffmpeg_video.c	2016-04-04 22:01:24.380778696 +0900
+@@ -32,8 +32,8 @@
+       .short_name = "mpeg1video",
+       .extension =  "m1v",
+       .max_video_streams = 1,
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG1VIDEO,
+-                                       CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG1VIDEO,
++                                       AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+@@ -42,8 +42,8 @@
+       .short_name = "mpeg2video",
+       .extension =  "m2v",
+       .max_video_streams = 1,
+-      .video_codecs = (enum AVCodecID[]){  CODEC_ID_MPEG2VIDEO,
+-                                       CODEC_ID_NONE },
++      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG2VIDEO,
++                                       AV_CODEC_ID_NONE },
+       .flags = FLAG_CONSTANT_FRAMERATE,
+       .framerates = bg_ffmpeg_mpeg_framerates,
+     },
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/ffmpeg_common.c gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/ffmpeg_common.c	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c	2016-04-04 22:04:27.966357428 +0900
+@@ -408,7 +408,7 @@
+                              priv->num_text_streams);
+ #endif 
+   
+-  set_audio_params(st, CODEC_ID_NONE);
++  set_audio_params(st, AV_CODEC_ID_NONE);
+   
+   priv->num_audio_streams++;
+   return priv->num_audio_streams-1;
+@@ -442,7 +442,7 @@
+ 
+   /* Will be cleared later if we don't write compressed
+      packets */
+-  set_video_params(st, CODEC_ID_NONE);
++  set_video_params(st, AV_CODEC_ID_NONE);
+   priv->num_video_streams++;
+   return priv->num_video_streams-1;
+   }
+@@ -479,7 +479,7 @@
+ #endif 
+ 
+   st->stream->codec->codec_type = CODEC_TYPE_SUBTITLE;
+-  st->stream->codec->codec_id = CODEC_ID_TEXT;
++  st->stream->codec->codec_id = AV_CODEC_ID_TEXT;
+ 
+   st->stream->codec->time_base.num = 1;
+   st->stream->codec->time_base.den = *timescale;
+@@ -502,14 +502,14 @@
+     /* Set the bitrate for PCM codecs */
+     switch(st->stream->codec->codec_id)
+       {
+-      case CODEC_ID_PCM_S16BE:
+-      case CODEC_ID_PCM_S16LE:
++      case AV_CODEC_ID_PCM_S16BE:
++      case AV_CODEC_ID_PCM_S16LE:
+         st->stream->codec->bit_rate = st->format.samplerate * st->format.num_channels * 16;
+         break;
+-      case CODEC_ID_PCM_S8:
+-      case CODEC_ID_PCM_U8:
+-      case CODEC_ID_PCM_ALAW:
+-      case CODEC_ID_PCM_MULAW:
++      case AV_CODEC_ID_PCM_S8:
++      case AV_CODEC_ID_PCM_U8:
++      case AV_CODEC_ID_PCM_ALAW:
++      case AV_CODEC_ID_PCM_MULAW:
+         st->stream->codec->bit_rate = st->format.samplerate * st->format.num_channels * 8;
+         break;
+       default:
+@@ -616,7 +616,7 @@
+   if(st->ci)
+     return 1;
+   
+-  if(st->stream->codec->codec_id == CODEC_ID_NONE)
++  if(st->stream->codec->codec_id == AV_CODEC_ID_NONE)
+     return 0;
+   
+   codec = avcodec_find_encoder(st->stream->codec->codec_id);
+@@ -686,7 +686,7 @@
+   int stats_len;
+   AVCodec * codec;
+ 
+-  if(st->stream->codec->codec_id == CODEC_ID_NONE)
++  if(st->stream->codec->codec_id == AV_CODEC_ID_NONE)
+     return 0;
+ 
+   if(st->ci)
+@@ -777,7 +777,7 @@
+   st->buffer_alloc = st->format.image_width * st->format.image_width * 4;
+   st->buffer = malloc(st->buffer_alloc);
+   
+-  st->frame = avcodec_alloc_frame();
++  st->frame = av_frame_alloc();
+   st->initialized = 1;
+   
+   return 1;
+@@ -896,7 +896,7 @@
+   pkt.data = st->buffer;
+   pkt.size = st->buffer_alloc;
+   
+-  avcodec_get_frame_defaults(&f);
++  av_frame_unref(&f);
+   f.nb_samples = st->frame->valid_samples;
+ 
+   f.pts = st->samples_written;
+@@ -1321,50 +1321,50 @@
+ 
+ static const struct
+   {
+-  enum PixelFormat  ffmpeg_csp;
++  enum AVPixelFormat  ffmpeg_csp;
+   gavl_pixelformat_t gavl_csp;
+   }
+ pixelformats[] =
+   {
+-    { PIX_FMT_YUV420P,       GAVL_YUV_420_P },  ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
++    { AV_PIX_FMT_YUV420P,       GAVL_YUV_420_P },  ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
+ #if LIBAVUTIL_VERSION_INT < (50<<16)
+-    { PIX_FMT_YUV422,        GAVL_YUY2      },
++    { AV_PIX_FMT_YUV422,        GAVL_YUY2      },
+ #else
+-    { PIX_FMT_YUYV422,       GAVL_YUY2      },
++    { AV_PIX_FMT_YUYV422,       GAVL_YUY2      },
+ #endif
+-    { PIX_FMT_YUV422P,       GAVL_YUV_422_P },  ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
+-    { PIX_FMT_YUV444P,       GAVL_YUV_444_P }, ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
+-    { PIX_FMT_YUV411P,       GAVL_YUV_411_P }, ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
+-    { PIX_FMT_YUVJ420P,      GAVL_YUVJ_420_P }, ///< Planar YUV 4:2:0 full scale (jpeg)
+-    { PIX_FMT_YUVJ422P,      GAVL_YUVJ_422_P }, ///< Planar YUV 4:2:2 full scale (jpeg)
+-    { PIX_FMT_YUVJ444P,      GAVL_YUVJ_444_P }, ///< Planar YUV 4:4:4 full scale (jpeg)
++    { AV_PIX_FMT_YUV422P,       GAVL_YUV_422_P },  ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
++    { AV_PIX_FMT_YUV444P,       GAVL_YUV_444_P }, ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
++    { AV_PIX_FMT_YUV411P,       GAVL_YUV_411_P }, ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
++    { AV_PIX_FMT_YUVJ420P,      GAVL_YUVJ_420_P }, ///< Planar YUV 4:2:0 full scale (jpeg)
++    { AV_PIX_FMT_YUVJ422P,      GAVL_YUVJ_422_P }, ///< Planar YUV 4:2:2 full scale (jpeg)
++    { AV_PIX_FMT_YUVJ444P,      GAVL_YUVJ_444_P }, ///< Planar YUV 4:4:4 full scale (jpeg)
+ 
+ #if 0 // Not needed in the forseeable future    
+-    { PIX_FMT_RGB24,         GAVL_RGB_24    },  ///< Packed pixel, 3 bytes per pixel, RGBRGB...
+-    { PIX_FMT_BGR24,         GAVL_BGR_24    },  ///< Packed pixel, 3 bytes per pixel, BGRBGR...
++    { AV_PIX_FMT_RGB24,         GAVL_RGB_24    },  ///< Packed pixel, 3 bytes per pixel, RGBRGB...
++    { AV_PIX_FMT_BGR24,         GAVL_BGR_24    },  ///< Packed pixel, 3 bytes per pixel, BGRBGR...
+ #if LIBAVUTIL_VERSION_INT < (50<<16)
+-    { PIX_FMT_RGBA32,        GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
++    { AV_PIX_FMT_RGBA32,        GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
+ #else
+-    { PIX_FMT_RGB32,         GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
++    { AV_PIX_FMT_RGB32,         GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
+ #endif
+-    { PIX_FMT_YUV410P,       GAVL_YUV_410_P }, ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
+-    { PIX_FMT_RGB565,        GAVL_RGB_16 }, ///< always stored in cpu endianness
+-    { PIX_FMT_RGB555,        GAVL_RGB_15 }, ///< always stored in cpu endianness, most significant bit to 1
+-    { PIX_FMT_GRAY8,         GAVL_PIXELFORMAT_NONE },
+-    { PIX_FMT_MONOWHITE,     GAVL_PIXELFORMAT_NONE }, ///< 0 is white
+-    { PIX_FMT_MONOBLACK,     GAVL_PIXELFORMAT_NONE }, ///< 0 is black
+-    // { PIX_FMT_PAL8,          GAVL_RGB_24     }, ///< 8 bit with RGBA palette
+-    { PIX_FMT_XVMC_MPEG2_MC, GAVL_PIXELFORMAT_NONE }, ///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
+-    { PIX_FMT_XVMC_MPEG2_IDCT, GAVL_PIXELFORMAT_NONE },
++    { AV_PIX_FMT_YUV410P,       GAVL_YUV_410_P }, ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
++    { AV_PIX_FMT_RGB565,        GAVL_RGB_16 }, ///< always stored in cpu endianness
++    { AV_PIX_FMT_RGB555,        GAVL_RGB_15 }, ///< always stored in cpu endianness, most significant bit to 1
++    { AV_PIX_FMT_GRAY8,         GAVL_PIXELFORMAT_NONE },
++    { AV_PIX_FMT_MONOWHITE,     GAVL_PIXELFORMAT_NONE }, ///< 0 is white
++    { AV_PIX_FMT_MONOBLACK,     GAVL_PIXELFORMAT_NONE }, ///< 0 is black
++    // { AV_PIX_FMT_PAL8,          GAVL_RGB_24     }, ///< 8 bit with RGBA palette
++    { AV_PIX_FMT_XVMC_MPEG2_MC, GAVL_PIXELFORMAT_NONE }, ///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
++    { AV_PIX_FMT_XVMC_MPEG2_IDCT, GAVL_PIXELFORMAT_NONE },
+ #if LIBAVCODEC_BUILD >= ((51<<16)+(45<<8)+0)
+-    { PIX_FMT_YUVA420P,      GAVL_YUVA_32 },
++    { AV_PIX_FMT_YUVA420P,      GAVL_YUVA_32 },
+ #endif
+     
+ #endif // Not needed
+-    { PIX_FMT_NB, GAVL_PIXELFORMAT_NONE }
++    { AV_PIX_FMT_NB, GAVL_PIXELFORMAT_NONE }
+ };
+ 
+-gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum PixelFormat p)
++gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum AVPixelFormat p)
+   {
+   int i;
+   for(i = 0; i < sizeof(pixelformats)/sizeof(pixelformats[0]); i++)
+@@ -1375,7 +1375,7 @@
+   return GAVL_PIXELFORMAT_NONE;
+   }
+ 
+-enum PixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p)
++enum AVPixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p)
+   {
+   int i;
+   for(i = 0; i < sizeof(pixelformats)/sizeof(pixelformats[0]); i++)
+@@ -1383,7 +1383,7 @@
+     if(pixelformats[i].gavl_csp == p)
+       return pixelformats[i].ffmpeg_csp;
+     }
+-  return PIX_FMT_NONE;
++  return AV_PIX_FMT_NONE;
+   }
+ 
+ 
+@@ -1422,27 +1422,27 @@
+ codec_ids[] =
+   {
+     /* Audio */
+-    { GAVL_CODEC_ID_ALAW,   CODEC_ID_PCM_ALAW  }, //!< alaw 2:1
+-    { GAVL_CODEC_ID_ULAW,   CODEC_ID_PCM_MULAW }, //!< mu-law 2:1
+-    { GAVL_CODEC_ID_MP2,    CODEC_ID_MP2       }, //!< MPEG-1 audio layer II
+-    { GAVL_CODEC_ID_MP3,    CODEC_ID_MP3       }, //!< MPEG-1/2 audio layer 3 CBR/VBR
+-    { GAVL_CODEC_ID_AC3,    CODEC_ID_AC3       }, //!< AC3
+-    { GAVL_CODEC_ID_AAC,    CODEC_ID_AAC       }, //!< AAC as stored in quicktime/mp4
+-    { GAVL_CODEC_ID_VORBIS, CODEC_ID_VORBIS    }, //!< Vorbis (segmented extradata and packets)
++    { GAVL_CODEC_ID_ALAW,   AV_CODEC_ID_PCM_ALAW  }, //!< alaw 2:1
++    { GAVL_CODEC_ID_ULAW,   AV_CODEC_ID_PCM_MULAW }, //!< mu-law 2:1
++    { GAVL_CODEC_ID_MP2,    AV_CODEC_ID_MP2       }, //!< MPEG-1 audio layer II
++    { GAVL_CODEC_ID_MP3,    AV_CODEC_ID_MP3       }, //!< MPEG-1/2 audio layer 3 CBR/VBR
++    { GAVL_CODEC_ID_AC3,    AV_CODEC_ID_AC3       }, //!< AC3
++    { GAVL_CODEC_ID_AAC,    AV_CODEC_ID_AAC       }, //!< AAC as stored in quicktime/mp4
++    { GAVL_CODEC_ID_VORBIS, AV_CODEC_ID_VORBIS    }, //!< Vorbis (segmented extradata and packets)
+     
+     /* Video */
+-    { GAVL_CODEC_ID_JPEG,      CODEC_ID_MJPEG      }, //!< JPEG image
+-    { GAVL_CODEC_ID_PNG,       CODEC_ID_PNG        }, //!< PNG image
+-    { GAVL_CODEC_ID_TIFF,      CODEC_ID_TIFF       }, //!< TIFF image
+-    { GAVL_CODEC_ID_TGA,       CODEC_ID_TARGA      }, //!< TGA image
+-    { GAVL_CODEC_ID_MPEG1,     CODEC_ID_MPEG1VIDEO }, //!< MPEG-1 video
+-    { GAVL_CODEC_ID_MPEG2,     CODEC_ID_MPEG2VIDEO }, //!< MPEG-2 video
+-    { GAVL_CODEC_ID_MPEG4_ASP, CODEC_ID_MPEG4      }, //!< MPEG-4 ASP (a.k.a. Divx4)
+-    { GAVL_CODEC_ID_H264,      CODEC_ID_H264       }, //!< H.264 (Annex B)
+-    { GAVL_CODEC_ID_THEORA,    CODEC_ID_THEORA     }, //!< Theora (segmented extradata
+-    { GAVL_CODEC_ID_DIRAC,     CODEC_ID_DIRAC      }, //!< Complete DIRAC frames, sequence end code appended to last packet
+-    { GAVL_CODEC_ID_DV,        CODEC_ID_DVVIDEO    }, //!< DV (several variants)
+-    { GAVL_CODEC_ID_NONE,      CODEC_ID_NONE       },
++    { GAVL_CODEC_ID_JPEG,      AV_CODEC_ID_MJPEG      }, //!< JPEG image
++    { GAVL_CODEC_ID_PNG,       AV_CODEC_ID_PNG        }, //!< PNG image
++    { GAVL_CODEC_ID_TIFF,      AV_CODEC_ID_TIFF       }, //!< TIFF image
++    { GAVL_CODEC_ID_TGA,       AV_CODEC_ID_TARGA      }, //!< TGA image
++    { GAVL_CODEC_ID_MPEG1,     AV_CODEC_ID_MPEG1VIDEO }, //!< MPEG-1 video
++    { GAVL_CODEC_ID_MPEG2,     AV_CODEC_ID_MPEG2VIDEO }, //!< MPEG-2 video
++    { GAVL_CODEC_ID_MPEG4_ASP, AV_CODEC_ID_MPEG4      }, //!< MPEG-4 ASP (a.k.a. Divx4)
++    { GAVL_CODEC_ID_H264,      AV_CODEC_ID_H264       }, //!< H.264 (Annex B)
++    { GAVL_CODEC_ID_THEORA,    AV_CODEC_ID_THEORA     }, //!< Theora (segmented extradata
++    { GAVL_CODEC_ID_DIRAC,     AV_CODEC_ID_DIRAC      }, //!< Complete DIRAC frames, sequence end code appended to last packet
++    { GAVL_CODEC_ID_DV,        AV_CODEC_ID_DVVIDEO    }, //!< DV (several variants)
++    { GAVL_CODEC_ID_NONE,      AV_CODEC_ID_NONE       },
+   };
+ 
+ enum AVCodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl)
+@@ -1454,7 +1454,7 @@
+       return codec_ids[i].ffmpeg;
+     i++;
+     }
+-  return CODEC_ID_NONE;
++  return AV_CODEC_ID_NONE;
+   }
+ 
+ int bg_ffmpeg_writes_compressed_audio(void * priv,
+@@ -1468,7 +1468,7 @@
+   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
+   
+   i = 0;
+-  while(f->format->audio_codecs[i] != CODEC_ID_NONE)
++  while(f->format->audio_codecs[i] != AV_CODEC_ID_NONE)
+     {
+     if(f->format->audio_codecs[i] == ffmpeg_id)
+       return 1;
+@@ -1489,7 +1489,7 @@
+   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
+ 
+   i = 0;
+-  while(f->format->video_codecs[i] != CODEC_ID_NONE)
++  while(f->format->video_codecs[i] != AV_CODEC_ID_NONE)
+     {
+     if(f->format->video_codecs[i] == ffmpeg_id)
+       return 1;
+diff -ur gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/ffmpeg_common.h gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.h
+--- gmerlin-encoders-1.2.0.orig/plugins/ffmpeg/ffmpeg_common.h	2016-04-04 22:00:18.560083199 +0900
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.h	2016-04-04 22:04:53.753369573 +0900
+@@ -61,7 +61,7 @@
+   const bg_parameter_info_t * parameters;
+ 
+   /* Terminated with PIX_FMT_NB */
+-  enum PixelFormat * pixelformats;
++  enum AVPixelFormat * pixelformats;
+   
+   } ffmpeg_codec_info_t;
+ 
+@@ -237,7 +237,7 @@
+ void bg_ffmpeg_set_video_parameter(void * data, int stream, const char * name,
+                                   const bg_parameter_value_t * v);
+ 
+-enum PixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id);
++enum AVPixelFormat * bg_ffmpeg_get_pixelformats(enum AVCodecID id);
+ 
+ 
+ int bg_ffmpeg_set_video_pass(void * data, int stream, int pass,
+@@ -264,8 +264,8 @@
+ 
+ int bg_ffmpeg_close(void * data, int do_delete);
+ 
+-gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum PixelFormat p);
+-enum PixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p);
++gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum AVPixelFormat p);
++enum AVPixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p);
+ 
+ gavl_sample_format_t bg_sample_format_ffmpeg_2_gavl(enum SampleFormat p);
+ 

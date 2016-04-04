@@ -3,7 +3,7 @@ Summary:	Encoder plugins for gmerlin
 Summary(pl.UTF-8):	Wtyczki kodujące dla gmerlina
 Name:		gmerlin-encoders
 Version:	1.2.0
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
@@ -11,6 +11,7 @@ Source0:	http://downloads.sourceforge.net/gmerlin/%{name}-%{version}.tar.gz
 Patch0:		%{name}-am.patch
 Patch1:		%{name}-link.patch
 Patch2:		ffmpeg2.patch
+Patch3:		ffmpeg3.patch
 URL:		http://gmerlin.sourceforge.net/avdec_frame.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -57,6 +58,7 @@ liczby formatów plików.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # evil, sets CFLAGS basing on /proc/cpuinfo, overrides our optflags
 # (--with-cpuflags=none disables using /proc/cpuinfo, but not overriding)
