@@ -1,0 +1,242 @@
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c~	2018-04-29 11:55:22.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/ffmpeg_common.c	2018-04-29 11:57:40.390265983 +0200
+@@ -633,7 +633,7 @@
+ 
+   /* Extract extradata */
+   if(priv->ctx->oformat->flags & AVFMT_GLOBALHEADER)
+-    st->stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
++    st->stream->codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+   
+ #if LIBAVCODEC_VERSION_MAJOR < 54
+   if(avcodec_open(st->stream->codec, codec) < 0)
+@@ -710,7 +710,7 @@
+     if(st->pass == 1)
+       {
+       st->stats_file = fopen(st->stats_filename, "w");
+-      st->stream->codec->flags |= CODEC_FLAG_PASS1;
++      st->stream->codec->flags |= AV_CODEC_FLAG_PASS1;
+       }
+     else if(st->pass == st->total_passes)
+       {
+@@ -732,7 +732,7 @@
+       fclose(st->stats_file);
+       st->stats_file = NULL;
+       
+-      st->stream->codec->flags |= CODEC_FLAG_PASS2;
++      st->stream->codec->flags |= AV_CODEC_FLAG_PASS2;
+       }
+     }
+ 
+@@ -758,7 +758,7 @@
+ 
+   /* Extract extradata */
+   if(priv->ctx->oformat->flags & AVFMT_GLOBALHEADER)
+-    st->stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
++    st->stream->codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+   
+ #if LIBAVCODEC_VERSION_MAJOR < 54
+   if(avcodec_open(st->stream->codec, codec) < 0)
+@@ -1555,7 +1555,7 @@
+     memcpy(st->stream->codec->extradata,
+            st->ci->global_header,
+            st->ci->global_header_len);
+-    st->stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
++    st->stream->codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+     }
+ 
+   
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c.orig	2018-04-29 11:55:22.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/codecs.c	2018-04-29 12:11:43.181063727 +0200
+@@ -129,31 +129,6 @@
+   PARAM_MAX_B_FRAMES,                 \
+   PARAM_B_FRAME_STRATEGY
+ 
+-#define ENCODE_PARAM_VIDEO_ME \
+-  {                                           \
+-    .name =      "motion_estimation",                       \
+-    .long_name = TRS("Motion estimation"),                     \
+-    .type =      BG_PARAMETER_SECTION,         \
+-  },                                        \
+-    PARAM_ME_METHOD,                        \
+-    PARAM_ME_CMP,\
+-    PARAM_ME_CMP_CHROMA,\
+-    PARAM_ME_RANGE,\
+-    PARAM_ME_THRESHOLD,\
+-    PARAM_MB_DECISION,\
+-    PARAM_DIA_SIZE
+-
+-#define ENCODE_PARAM_VIDEO_ME_PRE \
+-  {                                           \
+-    .name =      "motion_estimation",                       \
+-    .long_name = TRS("ME pre-pass"),                     \
+-    .type =      BG_PARAMETER_SECTION,         \
+-  },                                        \
+-    PARAM_PRE_ME,\
+-    PARAM_ME_PRE_CMP,\
+-    PARAM_ME_PRE_CMP_CHROMA,\
+-    PARAM_PRE_DIA_SIZE
+-
+ #define ENCODE_PARAM_VIDEO_QPEL                 \
+   {                                           \
+     .name =      "qpel_motion_estimation",                       \
+@@ -175,7 +150,6 @@
+     PARAM_DARK_MASKING, \
+     PARAM_TEMPORAL_CPLX_MASKING, \
+     PARAM_SPATIAL_CPLX_MASKING, \
+-    PARAM_BORDER_MASKING, \
+     PARAM_P_MASKING,                                       \
+     PARAM_FLAG_NORMALIZE_AQP
+ 
+@@ -196,12 +170,10 @@
+   ENCODE_PARAM_VIDEO_RATECONTROL,
+   ENCODE_PARAM_VIDEO_QUANTIZER_IPB,
+   PARAM_FLAG_CBP_RD,
+-  ENCODE_PARAM_VIDEO_ME,
+   PARAM_FLAG_GMC,
+   PARAM_FLAG_4MV,
+   PARAM_FLAG_MV0,
+   PARAM_FLAG_QP_RD,
+-  ENCODE_PARAM_VIDEO_ME_PRE,
+   ENCODE_PARAM_VIDEO_QPEL,
+   ENCODE_PARAM_VIDEO_MASKING,
+   ENCODE_PARAM_VIDEO_MISC,
+@@ -219,8 +191,6 @@
+   ENCODE_PARAM_VIDEO_FRAMETYPES_IPB,
+   ENCODE_PARAM_VIDEO_RATECONTROL,
+   ENCODE_PARAM_VIDEO_QUANTIZER_IPB,
+-  ENCODE_PARAM_VIDEO_ME,
+-  ENCODE_PARAM_VIDEO_ME_PRE,
+   ENCODE_PARAM_VIDEO_MASKING,
+   ENCODE_PARAM_VIDEO_MISC,
+   { /* End of parameters */ }
+@@ -231,8 +201,6 @@
+   ENCODE_PARAM_VIDEO_FRAMETYPES_IP,
+   ENCODE_PARAM_VIDEO_RATECONTROL,
+   ENCODE_PARAM_VIDEO_QUANTIZER_IP,
+-  ENCODE_PARAM_VIDEO_ME,
+-  ENCODE_PARAM_VIDEO_ME_PRE,
+   ENCODE_PARAM_VIDEO_MASKING,
+   ENCODE_PARAM_VIDEO_MISC,
+   { /* End of parameters */ }
+@@ -817,16 +785,6 @@
+ 
+   
+ 
+-const enum_t me_method[] =
+-  {
+-    { "Zero",  ME_ZERO },
+-    { "Phods", ME_PHODS },
+-    { "Log",   ME_LOG },
+-    { "X1",    ME_X1 },
+-    { "Epzs",  ME_EPZS },
+-    { "Full",  ME_FULL }
+-  };
+-
+ const enum_t prediction_method[] =
+   {
+     { "Left",   FF_PRED_LEFT },
+@@ -920,7 +878,6 @@
+   PARAM_STR_INT_SCALE("ff_bit_rate_str", bit_rate, 1000);
+ 
+   PARAM_INT_SCALE("ff_bit_rate_tolerance",bit_rate_tolerance,1000);
+-  PARAM_ENUM("ff_me_method",me_method,me_method);
+   PARAM_INT("ff_gop_size",gop_size);
+   PARAM_FLOAT("ff_qcompress",qcompress);
+   PARAM_FLOAT("ff_qblur",qblur);
+@@ -935,10 +892,10 @@
+   PARAM_INT("ff_rc_min_rate",rc_min_rate);
+   PARAM_INT("ff_rc_max_rate",rc_max_rate);
+   PARAM_INT_SCALE("ff_rc_buffer_size",rc_buffer_size,1000);
+-  PARAM_FLOAT("ff_rc_buffer_aggressivity",rc_buffer_aggressivity);
++  //PARAM_FLOAT("ff_rc_buffer_aggressivity",rc_buffer_aggressivity);
+   PARAM_FLOAT("ff_i_quant_factor",i_quant_factor);
+   PARAM_QP2LAMBDA("ff_i_quant_offset",i_quant_offset);
+-  PARAM_FLOAT("ff_rc_initial_cplx",rc_initial_cplx);
++  //PARAM_FLOAT("ff_rc_initial_cplx",rc_initial_cplx);
+   PARAM_FLOAT("ff_lumi_masking",lumi_masking);
+   PARAM_FLOAT("ff_temporal_cplx_masking",temporal_cplx_masking);
+   PARAM_FLOAT("ff_spatial_cplx_masking",spatial_cplx_masking);
+@@ -963,46 +920,46 @@
+   PARAM_INT("ff_me_range",me_range);
+   PARAM_ENUM("ff_mb_decision",mb_decision,mb_decision);
+   PARAM_INT("ff_scenechange_threshold",scenechange_threshold);
+-  PARAM_QP2LAMBDA("ff_lmin", lmin);
+-  PARAM_QP2LAMBDA("ff_lmax", lmax);
++  //PARAM_QP2LAMBDA("ff_lmin", lmin);
++  //PARAM_QP2LAMBDA("ff_lmax", lmax);
+   PARAM_INT("ff_noise_reduction",noise_reduction);
+   PARAM_INT_SCALE("ff_rc_initial_buffer_occupancy",rc_initial_buffer_occupancy,1000);
+-  PARAM_INT("ff_me_threshold",me_threshold);
+-  PARAM_INT("ff_mb_threshold",mb_threshold);
++  //PARAM_INT("ff_me_threshold",me_threshold);
++  //PARAM_INT("ff_mb_threshold",mb_threshold);
+   PARAM_INT("ff_nsse_weight",nsse_weight);
+-  PARAM_FLOAT("ff_border_masking",border_masking);
++  // PARAM_FLOAT("ff_border_masking",border_masking);
+   PARAM_QP2LAMBDA("ff_mb_lmin", mb_lmin);
+   PARAM_QP2LAMBDA("ff_mb_lmax", mb_lmax);
+   PARAM_INT("ff_me_penalty_compensation",me_penalty_compensation);
+   PARAM_INT("ff_bidir_refine",bidir_refine);
+   PARAM_INT("ff_brd_scale",brd_scale);
+-  PARAM_INT("ff_scenechange_factor",scenechange_factor);
+-  PARAM_FLAG("ff_flag_qscale",CODEC_FLAG_QSCALE);
+-  PARAM_FLAG("ff_flag_4mv",CODEC_FLAG_4MV);
+-  PARAM_FLAG("ff_flag_qpel",CODEC_FLAG_QPEL);
+-  PARAM_FLAG("ff_flag_gmc",CODEC_FLAG_GMC);
+-  PARAM_FLAG("ff_flag_mv0",CODEC_FLAG_MV0);
+-  //  PARAM_FLAG("ff_flag_part",CODEC_FLAG_PART);
+-  PARAM_FLAG("ff_flag_gray",CODEC_FLAG_GRAY);
+-  PARAM_FLAG("ff_flag_emu_edge",CODEC_FLAG_EMU_EDGE);
+-  PARAM_FLAG("ff_flag_normalize_aqp",CODEC_FLAG_NORMALIZE_AQP);
+-  //  PARAM_FLAG("ff_flag_alt_scan",CODEC_FLAG_ALT_SCAN);
++  //PARAM_INT("ff_scenechange_factor",scenechange_factor);
++  PARAM_FLAG("ff_flag_qscale",AV_CODEC_FLAG_QSCALE);
++  PARAM_FLAG("ff_flag_4mv",AV_CODEC_FLAG_4MV);
++  PARAM_FLAG("ff_flag_qpel",AV_CODEC_FLAG_QPEL);
++  // PARAM_FLAG("ff_flag_gmc",AV_CODEC_FLAG_GMC);
++  // PARAM_FLAG("ff_flag_mv0",AV_CODEC_FLAG_MV0);
++  //  PARAM_FLAG("ff_flag_part",AV_CODEC_FLAG_PART);
++  PARAM_FLAG("ff_flag_gray",AV_CODEC_FLAG_GRAY);
++  // PARAM_FLAG("ff_flag_emu_edge",AV_CODEC_FLAG_EMU_EDGE);
++  // PARAM_FLAG("ff_flag_normalize_aqp",AV_CODEC_FLAG_NORMALIZE_AQP);
++  //  PARAM_FLAG("ff_flag_alt_scan",AV_CODEC_FLAG_ALT_SCAN);
+ #if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
+-  PARAM_FLAG("ff_flag_trellis_quant",CODEC_FLAG_TRELLIS_QUANT);
++  PARAM_FLAG("ff_flag_trellis_quant",AV_CODEC_FLAG_TRELLIS_QUANT);
+ #else
+   PARAM_INT("ff_trellis",trellis);
+ #endif
+-  PARAM_FLAG("ff_flag_bitexact",CODEC_FLAG_BITEXACT);
+-  PARAM_FLAG("ff_flag_ac_pred",CODEC_FLAG_AC_PRED);
+-  //  PARAM_FLAG("ff_flag_h263p_umv",CODEC_FLAG_H263P_UMV);
++  PARAM_FLAG("ff_flag_bitexact",AV_CODEC_FLAG_BITEXACT);
++  PARAM_FLAG("ff_flag_ac_pred",AV_CODEC_FLAG_AC_PRED);
++  //  PARAM_FLAG("ff_flag_h263p_umv",AV_CODEC_FLAG_H263P_UMV);
+   PARAM_FLAG("ff_flag_cbp_rd",0x04000000);
+   PARAM_FLAG("ff_flag_qp_rd",0x08000000);
+-  //  PARAM_FLAG("ff_flag_h263p_aiv",CODEC_FLAG_H263P_AIV);
+-  //  PARAM_FLAG("ffx_flag_obmc",CODEC_FLAG_OBMC);
+-  PARAM_FLAG("ff_flag_loop_filter",CODEC_FLAG_LOOP_FILTER);
+-  //  PARAM_FLAG("ff_flag_h263p_slice_struct",CODEC_FLAG_H263P_SLICE_STRUCT);
+-  PARAM_FLAG("ff_flag_closed_gop",CODEC_FLAG_CLOSED_GOP);
+-  PARAM_FLAG2("ff_flag2_fast",CODEC_FLAG2_FAST);
++  //  PARAM_FLAG("ff_flag_h263p_aiv",AV_CODEC_FLAG_H263P_AIV);
++  //  PARAM_FLAG("ffx_flag_obmc",AV_CODEC_FLAG_OBMC);
++  PARAM_FLAG("ff_flag_loop_filter",AV_CODEC_FLAG_LOOP_FILTER);
++  //  PARAM_FLAG("ff_flag_h263p_slice_struct",AV_CODEC_FLAG_H263P_SLICE_STRUCT);
++  PARAM_FLAG("ff_flag_closed_gop",AV_CODEC_FLAG_CLOSED_GOP);
++  PARAM_FLAG2("ff_flag2_fast",AV_CODEC_FLAG2_FAST);
+   PARAM_FLAG2("ff_flag2_strict_gop",0x00000002);
+ 
+ #if LIBAVCODEC_VERSION_MAJOR >= 54
+--- gmerlin-encoders-1.2.0/plugins/ffmpeg/params.h~	2012-06-08 13:52:27.000000000 +0200
++++ gmerlin-encoders-1.2.0/plugins/ffmpeg/params.h	2018-04-29 12:09:17.582500806 +0200
+@@ -146,7 +146,7 @@
+     .type =      BG_PARAMETER_SLIDER_INT,                                       \
+     .val_default = { .val_i = 0 },                                        \
+     .val_min =     { .val_i = 0 },                                        \
+-    .val_max =     { .val_i = FF_MAX_B_FRAMES },                          \
++    .val_max =     { .val_i = 16 },                          \
+     .help_string = TRS("Maximum number of B-frames between non B-frames") \
+   }
+ 
